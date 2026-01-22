@@ -1,0 +1,8 @@
+{
+  "total_frames": 36,
+  "valid_detections": 35,
+  "outliers_removed": 0,
+  "interpolated_frames": 1,
+  "smoothing_method": "savgol",
+  "processing_time": 0.119
+}

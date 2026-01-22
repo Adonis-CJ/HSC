@@ -1,0 +1,113 @@
+{
+  "image_path": "C:\\Users\\Gates\\Desktop\\HSC\\src\\img\\frames\\000001.jpg",
+  "image_size": [
+    1920,
+    1080
+  ],
+  "coordinate_system": {
+    "origin": "field_center",
+    "x_axis": "parallel to goal line, right positive",
+    "y_axis": "perpendicular to goal line, toward goal positive",
+    "z_axis": "vertical up",
+    "unit": "meters"
+  },
+  "keypoints": [
+    {
+      "name": "goal_left_bottom",
+      "pixel": [
+        1312,
+        523
+      ],
+      "field": [
+        -3.66,
+        52.5,
+        0
+      ]
+    },
+    {
+      "name": "goal_right_bottom",
+      "pixel": [
+        1531,
+        570
+      ],
+      "field": [
+        3.66,
+        52.5,
+        0
+      ]
+    },
+    {
+      "name": "goal_left_top",
+      "pixel": [
+        1315,
+        408
+      ],
+      "field": [
+        -3.66,
+        52.5,
+        2.44
+      ]
+    },
+    {
+      "name": "goal_right_top",
+      "pixel": [
+        1537,
+        444
+      ],
+      "field": [
+        3.66,
+        52.5,
+        2.44
+      ]
+    },
+    {
+      "name": "field_corner_left",
+      "pixel": [
+        689,
+        403
+      ],
+      "field": [
+        -34,
+        52.5,
+        0
+      ]
+    },
+    {
+      "name": "penalty_spot",
+      "pixel": [
+        947,
+        584
+      ],
+      "field": [
+        0,
+        41.5,
+        0
+      ]
+    },
+    {
+      "name": "penalty_area_left",
+      "pixel": [
+        305,
+        490
+      ],
+      "field": [
+        -20.16,
+        36,
+        0
+      ]
+    },
+    {
+      "name": "penalty_area_right",
+      "pixel": [
+        1306,
+        789
+      ],
+      "field": [
+        20.16,
+        36,
+        0
+      ]
+    }
+  ],
+  "timestamp": "2026-01-22T20:25:16.181690"
+}
