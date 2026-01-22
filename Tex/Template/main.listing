@@ -1,0 +1,22 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Create sample data
+data = {
+    'x': np.linspace(0, 10, 100),
+    'y': np.sin(np.linspace(0, 10, 100))
+}
+df = pd.DataFrame(data)
+
+# Long Long  Long Long  Long Long  Long Long  Long Long Data analysis and visualization#
+print("Data statistics:")
+print(df.describe())
+
+plt.figure(figsize=(10, 6))
+plt.plot(df['x'], df['y'], 'b-', linewidth=2)
+plt.title('Sine Function Plot')
+plt.xlabel('x')
+plt.ylabel('sin(x)')
+plt.grid(True)
+plt.show()
