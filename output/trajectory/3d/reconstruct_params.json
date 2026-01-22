@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-01-22T21:04:20.875360",
+  "input_files": {
+    "trajectory_2d": "C:\\Users\\Gates\\Desktop\\HSC\\output\\trajectory\\2d\\trajectory_2d_clean.csv",
+    "homography": "C:\\Users\\Gates\\Desktop\\HSC\\output\\calibration\\homography.json"
+  },
+  "output_files": {
+    "trajectory_ground": "C:\\Users\\Gates\\Desktop\\HSC\\output\\trajectory\\3d\\trajectory_ground.csv",
+    "trajectory_3d": "C:\\Users\\Gates\\Desktop\\HSC\\output\\trajectory\\3d\\trajectory_3d.csv"
+  },
+  "projectile_model": {
+    "z0": 0.22,
+    "vz0": 7.19073,
+    "g": 9.81,
+    "method": "projectile_with_constraints"
+  },
+  "initial_velocity": {
+    "v0": 72.1817007163126,
+    "vx0": 47.90188022232434,
+    "vy0": 53.60356177627,
+    "vz0": 6.501227142857147
+  },
+  "launch_angles": {
+    "elevation_deg": 5.167491772344368,
+    "azimuth_deg": 41.78500631315567
+  },
+  "trajectory_stats": {
+    "num_points": 36,
+    "duration_s": 1.167,
+    "max_height_m": 2.855402545,
+    "horizontal_distance_m": 49.478254507986215,
+    "start_position": [
+      -32.11870936986301,
+      29.997440379008662,
+      0.22
+    ],
+    "end_position": [
+      5.478301369863017,
+      62.16205529344504,
+      1.9315163650000011
+    ]
+  }
+}
