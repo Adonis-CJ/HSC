@@ -1,18 +1,18 @@
-# 足球轨迹在空间坐标系的重建与足球运动初速度的计算
+﻿# 足球轨迹在空间坐标系的重建与足球运动初速度的计算
 
 ## 问题阐述
-该项目面向“直接任意球”视频数据，目标是：
+该项目面向"直接任意球"视频数据，目标是：
 
 1. 从视频中提取足球的时序像素位置（2D 轨迹）；
 2. 将其映射到以足球场边线为坐标轴、地面为坐标平面的空间坐标系中，重建（或在合理假设下估计）足球的三维运动轨迹；
 3. 对地面投影曲线进行拟合（例如多项式/样条/物理模型参数化曲线）；
 4. 在可识别的时间尺度与尺度标定条件下，估计足球初速度及相关物理量（如发射角、水平/竖直分量）。
 
-> 说明：当前仓库以“论文/资料沉淀 + 处理流程骨架”为主，`code/` 下的 `MODEL*` 目录目前为空（脚本尚未补齐或未提交）。README 给出的是与本仓库目录匹配的流程与接口约定，便于后续把代码按步骤落位。
+> 说明：各模块目录下已包含 README.md 说明文档，全局配置参见 `config/config.yaml`。
 
 ## 空间坐标系与场地几何（用于标定/尺度）
 
-题目要求“以足球场边线为坐标轴，地面为坐标平面”建立空间坐标系。为了把像素轨迹映射到场地坐标，需要依赖标准场地尺寸作为**尺度与几何约束**（详见 [problem/A-Translate.md](problem/A-Translate.md)）。
+题目要求"以足球场边线为坐标轴，地面为坐标平面"建立空间坐标系。为了把像素轨迹映射到场地坐标，需要依赖标准场地尺寸作为**尺度与几何约束**（详见 [A-Translate.md](../../../A-Translate.md)）。
 
 **标准场地尺寸（单位：m）**
 
@@ -38,72 +38,108 @@
 
 ```
 HSC/
+├─ config/
+│  └─ config.yaml            # 全局配置文件（视频处理、检测、标定、拟合等参数）
 ├─ src/
-│  ├─ video/                # 原始视频（已包含 Ball_video.mp4）
-│  └─ img/                  # 帧图/可视化结果（当前为空）
+│  ├─ video/                 # 原始视频
+│  │  └─ Ball_video.mp4
+│  └─ img/
+│     ├─ frames/             # 抽帧输出的帧图像序列
+│     └─ vis/                # 可视化输出
+│        ├─ detection/       # 检测结果可视化
+│        ├─ calibration/     # 标定可视化
+│        ├─ reconstruction/  # 轨迹重建可视化
+│        ├─ fitting/         # 曲线拟合可视化
+│        └─ velocity/        # 速度估计可视化
 ├─ code/
 │  ├─ MODEL1/                # 第1问：轨迹重建 + 初速度估计（本仓库核心）
+│  │  ├─ Instruct.md         # 本说明文档
 │  │  ├─ 1-vid2img/          # 抽帧/时间戳（fps、frame→t 映射）
+│  │  │  └─ README.md
 │  │  ├─ 2-point/            # 足球检测/跟踪（输出 2D 像素轨迹）
+│  │  │  └─ README.md
 │  │  ├─ 3-dataclean/        # 轨迹清洗/平滑/插值（处理缺失与离群）
+│  │  │  └─ README.md
 │  │  ├─ 4-field-calib/      # 场地几何与标定（线段/角点/球门→单应性/弱标定）
+│  │  │  └─ README.md
 │  │  ├─ 5-reconstruct/      # 2D→地面坐标；可选：弱 3D 重建/估计
+│  │  │  └─ README.md
 │  │  ├─ 6-fit-speed/        # 曲线拟合 + 初速度估计（含不确定性/置信区间）
+│  │  │  └─ README.md
 │  │  └─ 7-report/           # 可视化与导出（图、表、论文插图素材）
-│  ├─ MODEL2/                # 第2问：香蕉球/落叶球/电梯球动力学建模与分类（扩展）
-│  └─ MODEL3/                # 第3问：人墙与门将策略（基于 MODEL1/2 输出的参数与仿真）
-├─ problem/
-│  └─ A-Translate.md         # 题面翻译与约束（场地尺寸、任务要求等）
+│  │     └─ README.md
+│  ├─ MODEL2/                # 第2问：香蕉球/落叶球/电梯球动力学建模与分类
+│  │  └─ README.md
+│  └─ MODEL3/                # 第3问：人墙与门将策略分析
+│     └─ README.md
+├─ output/                   # 结构化输出数据
+│  ├─ trajectory/            # 轨迹数据
+│  │  ├─ 2d/                 # 2D 像素轨迹
+│  │  └─ 3d/                 # 3D 场地轨迹
+│  ├─ calibration/           # 标定数据
+│  ├─ fitting/               # 拟合参数
+│  ├─ velocity/              # 速度估计
+│  └─ report/                # 汇总报告
+│     └─ latex_figures/      # LaTeX 论文用图片副本
+├─ A-Translate.md            # 题面翻译与约束（场地尺寸、任务要求等）
 ├─ article/                  # 参考资料（轨迹识别/建模/仿真等论文的双语稿）
 └─ Tex/
-	 ├─ Template/              # LaTeX 论文模板（含已编译的 main.pdf）
-	 └─ 完整/                  # 另一份 LaTeX 示例/素材
+   ├─ Template/              # LaTeX 论文模板（含已编译的 main.pdf）
+   └─ 完整/                  # 另一份 LaTeX 示例/素材
 ```
 
-建议的“数据产物”约定（后续脚本落地时可直接对齐）：
+### 数据产物约定
 
-- `src/img/frames/`：从视频抽帧得到的帧序列
-- `src/img/vis/`：检测/拟合/重建的可视化图片
-- `outputs/`：结构化结果（CSV/JSON），例如 `trajectory_2d.csv`、`trajectory_3d.csv`、`fit_params.json`
+| 阶段 | 输出目录 | 文件 |
+|------|----------|------|
+| 抽帧 | `src/img/frames/` | `000001.jpg`, `000002.jpg`, ... |
+| 检测 | `output/trajectory/2d/` | `trajectory_2d_raw.csv` |
+| 清洗 | `output/trajectory/2d/` | `trajectory_2d_clean.csv`, `clean_report.json` |
+| 标定 | `output/calibration/` | `homography.json`, `keypoints.json` |
+| 重建 | `output/trajectory/3d/` | `trajectory_ground.csv`, `trajectory_3d.csv` |
+| 拟合 | `output/fitting/` | `fit_params.json` |
+| 速度 | `output/velocity/` | `v0.json` |
+| 可视化 | `src/img/vis/` | 各类可视化图片 |
+| 报告 | `output/report/` | `summary.json`, `summary.md` |
 
 ## 解决方案
 
-本仓库的 **MODEL1（第1问）** 建议按“视觉测量 → 场地标定/尺度 → 重建 → 拟合 → 初速度估计”拆解。
+本仓库的 **MODEL1（第1问）** 建议按"视觉测量 → 场地标定/尺度 → 重建 → 拟合 → 初速度估计"拆解。
 
 ### 1) 视频到 2D 轨迹（像素坐标）
 
 - **抽帧/时间轴**：从视频抽取每一帧或固定 FPS（例如 25/30fps）。关键是保存帧序号与时间戳的对应关系：$t=i/\text{fps}$。
 - **足球检测与跟踪**：
-	- 传统：颜色/圆检测（Hough Circle）+ Kalman 滤波；
-	- 学习：目标检测（YOLO 等）+ 跟踪（SORT/ByteTrack）。
+  - 传统：颜色/圆检测（Hough Circle）+ Kalman 滤波；
+  - 学习：目标检测（YOLO 等）+ 跟踪（SORT/ByteTrack）。
 - **输出**：得到按时间排序的 $(u_i, v_i, t_i)$（像素坐标系）。
 
 ### 2) 坐标系与尺度（从像素到场地坐标）
 
-要回答“空间坐标系中的轨迹”，必须解决“尺度”和“相机几何”。可选路线如下（按信息需求从低到高）：
+要回答"空间坐标系中的轨迹"，必须解决"尺度"和"相机几何"。可选路线如下（按信息需求从低到高）：
 
 1. **地面平面（2D）重建**：优先用球场线条/角点/球门结构做单应性（Homography），将像素点映射到地面平面坐标 $(X, Y)$。
 2. **在合理假设下估计 3D**：在单机位视频常见且缺乏完整标定时，可结合：
-	 - 已知尺寸（球门 $7.32\times 2.44$ m、场地 $105\times 68$ m、罚球点等）；
-	 - 抛体运动约束（不考虑/或简化空气阻力与马格努斯力时，轨迹近似抛物线）；
-	 - 通过最小二乘/非线性优化同时拟合“相机参数 + 3D 轨迹参数”。
+   - 已知尺寸（球门 $7.32\times 2.44$ m、场地 $105\times 68$ m、罚球点等）；
+   - 抛体运动约束（不考虑/或简化空气阻力与马格努斯力时，轨迹近似抛物线）；
+   - 通过最小二乘/非线性优化同时拟合"相机参数 + 3D 轨迹参数"。
 3. **严格 3D 三角化**：若有多机位同步或可获取相机内外参，则用多视几何直接三角化得到 $(X, Y, Z)$。
 
 ### 3) 拟合与初速度估计
 
 - **几何拟合（经验）**：
-	- 地面投影曲线：多项式/样条拟合 $(X(t),Y(t))$ 或 $Y(X)$；
-	- 高度：在 3D 可得时拟合 $Z(t)$。
+  - 地面投影曲线：多项式/样条拟合 $(X(t),Y(t))$ 或 $Y(X)$；
+  - 高度：在 3D 可得时拟合 $Z(t)$。
 - **物理拟合（推荐）**：使用受力模型（重力、空气阻力、马格努斯力）做参数反演，直接估计初速度 $\mathbf{v}_0$、旋转相关参数等。
 - **初速度计算**：
-	- 若得到 3D 轨迹：$\mathbf{v}_0\approx (\Delta\mathbf{x}/\Delta t)\vert_{t=t_0}$（建议用前几帧做线性回归/滤波估计，而不是单差分）；
-	- 若仅 2D/地面：可得到水平速度分量的下界或在附加假设下的估计值。
+  - 若得到 3D 轨迹：$\mathbf{v}_0\approx (\Delta\mathbf{x}/\Delta t)\vert_{t=t_0}$（建议用前几帧做线性回归/滤波估计，而不是单差分）；
+  - 若仅 2D/地面：可得到水平速度分量的下界或在附加假设下的估计值。
 
 ## 操作流程
 
 ### A. 复现论文（LaTeX）
 
-模板与已编译 PDF 位于 [Tex/Template/main.pdf](Tex/Template/main.pdf) 与 [Tex/Template/main.tex](Tex/Template/main.tex)。
+模板与已编译 PDF 位于 `Tex/Template/main.pdf` 与 `Tex/Template/main.tex`。
 
 在 Windows 上建议使用 MiKTeX 或 TeX Live，并优先用 `latexmk`：
 
@@ -114,7 +150,7 @@ HSC/
 
 ### B. 视频数据准备
 
-当前仓库内置示例视频： [src/video/Ball_video.mp4](src/video/Ball_video.mp4)。
+当前仓库内置示例视频：`src/video/Ball_video.mp4`。
 
 建议约定：
 
@@ -127,16 +163,16 @@ HSC/
 ffmpeg -i src/video/Ball_video.mp4 -vf fps=30 src/img/frames/%06d.jpg
 ```
 
-### C. 轨迹提取（脚本待补齐的落位建议）
+### C. 轨迹提取（各模块说明）
 
-由于 `code/` 下模型目录目前为空，建议按下面的接口把后续脚本放入对应目录（第1问全部归入 MODEL1）：
+各模块详细接口说明请参见对应目录下的 README.md：
 
 1. `code/MODEL1/1-vid2img/`：视频抽帧与时间戳管理
-2. `code/MODEL1/2-point/`：足球检测/跟踪，输出 `trajectory_2d.csv`
+2. `code/MODEL1/2-point/`：足球检测/跟踪，输出 `trajectory_2d_raw.csv`
 3. `code/MODEL1/3-dataclean/`：轨迹平滑、缺失点插值、异常点剔除
-4. `code/MODEL1/4-field-calib/`：场地线/球门检测，建立地面单应性与尺度（引用“空间坐标系与场地几何”）
-5. `code/MODEL1/5-reconstruct/`：像素轨迹→地面坐标；可选：弱 3D 估计，输出 `trajectory_3d.csv`
-6. `code/MODEL1/6-fit-speed/`：曲线拟合与初速度估计，输出 `fit_params.json`、`v0.json`
+4. `code/MODEL1/4-field-calib/`：场地线/球门检测，建立地面单应性与尺度
+5. `code/MODEL1/5-reconstruct/`：像素轨迹→地面坐标；可选：弱 3D 估计
+6. `code/MODEL1/6-fit-speed/`：曲线拟合与初速度估计
 7. `code/MODEL1/7-report/`：可视化与论文插图素材导出
 
 输出文件建议至少包含以下字段（CSV）：
@@ -147,7 +183,7 @@ ffmpeg -i src/video/Ball_video.mp4 -vf fps=30 src/img/frames/%06d.jpg
 ### D. 结果展示与写作
 
 - 可视化图片建议集中放在 `src/img/vis/`，便于在 LaTeX 中通过相对路径插入。
-- 建议在 [problem/A-Translate.md](problem/A-Translate.md) 中列出的场地/球门尺寸处统一引用，避免写作中单位不一致。
+- 建议在 `A-Translate.md` 中列出的场地/球门尺寸处统一引用，避免写作中单位不一致。
 
 ## 优化方案
 
@@ -164,10 +200,10 @@ ffmpeg -i src/video/Ball_video.mp4 -vf fps=30 src/img/frames/%06d.jpg
 
 ### 物理模型
 
-- **加入空气阻力/马格努斯力**：对“香蕉球/落叶球/电梯球”分类更有解释力（参考 `article/` 中综述与建模资料）。
+- **加入空气阻力/马格努斯力**：对"香蕉球/落叶球/电梯球"分类更有解释力（参考 `article/` 中综述与建模资料）。
 - **参数反演**：用非线性最小二乘/贝叶斯方法估计 $\mathbf{v}_0$、旋转相关参数，使结果可解释且可比较。
 
 ### 工程化
 
-- **配置化**：把 fps、抽帧策略、模型权重、输出路径做成配置文件，减少硬编码。
-- **流水线化**：把“抽帧→检测→清洗→重建→拟合→输出”做成可一键运行的脚本/任务，便于复现实验。
+- **配置化**：所有参数集中在 `config/config.yaml`，减少硬编码。
+- **流水线化**：把"抽帧→检测→清洗→重建→拟合→输出"做成可一键运行的脚本/任务，便于复现实验。

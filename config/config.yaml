@@ -1,0 +1,134 @@
+# HSC 项目全局配置文件
+# 足球轨迹重建与初速度估计
+
+# ==================== 视频处理参数 ====================
+video:
+  input_path: "../src/video/Ball_video.mp4"
+  fps: 30                    # 目标抽帧帧率
+  output_frames_dir: "../src/img/frames/"
+  frame_format: "%06d.jpg"   # 帧文件命名格式
+
+# ==================== 足球检测参数 ====================
+detection:
+  method: "yolo"             # 可选: yolo, hough, color
+  # YOLO 配置
+  yolo:
+    model_path: "yolov8n.pt"
+    confidence_threshold: 0.5
+    iou_threshold: 0.45
+    classes: [32]            # COCO 中足球类别ID
+  # Hough 圆检测配置
+  hough:
+    min_radius: 5
+    max_radius: 50
+    dp: 1.2
+    min_dist: 50
+  # 颜色检测配置
+  color:
+    hsv_lower: [0, 0, 200]
+    hsv_upper: [180, 30, 255]
+
+# ==================== 跟踪参数 ====================
+tracking:
+  method: "kalman"           # 可选: kalman, sort, bytetrack
+  max_age: 10                # 最大丢失帧数
+  min_hits: 3                # 最小连续检测次数
+  iou_threshold: 0.3
+
+# ==================== 数据清洗参数 ====================
+dataclean:
+  # 平滑参数
+  smoothing:
+    method: "savgol"         # 可选: savgol, gaussian, kalman
+    window_size: 5
+    poly_order: 2
+  # 插值参数
+  interpolation:
+    method: "cubic"          # 可选: linear, cubic, spline
+    max_gap: 5               # 最大插值帧间隔
+  # 异常点检测
+  outlier:
+    method: "zscore"         # 可选: zscore, iqr, velocity
+    threshold: 3.0
+
+# ==================== 场地标定参数 ====================
+calibration:
+  # 标准场地尺寸 (单位: m)
+  field:
+    length: 105.0
+    width: 68.0
+  goal:
+    width: 7.32
+    height: 2.44
+  penalty_area:
+    length: 40.32
+    width: 16.5
+  goal_area:
+    length: 18.32
+    width: 5.5
+  penalty_spot_distance: 11.0
+  penalty_arc_radius: 9.15
+  center_circle_radius: 9.15
+  corner_arc_radius: 1.0
+  # 标定方法
+  method: "homography"       # 可选: homography, pnp, dlt
+  # 手动标注点文件 (可选)
+  keypoints_file: null
+
+# ==================== 3D 重建参数 ====================
+reconstruct:
+  method: "homography_projectile"  # 可选: homography_only, homography_projectile, triangulation
+  # 抛体运动参数
+  projectile:
+    gravity: 9.81            # 重力加速度 (m/s²)
+    air_resistance: false    # 是否考虑空气阻力
+    drag_coefficient: 0.2    # 阻力系数 (如启用)
+  # 弱标定参数
+  weak_calibration:
+    assume_ground_start: true    # 假设起点在地面
+    use_goal_height: true        # 使用球门高度约束
+
+# ==================== 曲线拟合参数 ====================
+fitting:
+  # 地面投影曲线拟合
+  ground_curve:
+    method: "polynomial"     # 可选: polynomial, spline, bezier
+    poly_degree: 3
+  # 高度曲线拟合
+  height_curve:
+    method: "parabola"       # 可选: parabola, polynomial, physics
+  # 物理模型拟合
+  physics_model:
+    include_drag: false
+    include_magnus: false
+
+# ==================== 初速度估计参数 ====================
+velocity:
+  method: "linear_regression"  # 可选: difference, linear_regression, physics_fit
+  initial_frames: 5            # 用于估计初速度的帧数
+  uncertainty_estimation: true # 是否估计不确定性
+
+# ==================== 输出配置 ====================
+output:
+  base_dir: "../output/"
+  # 各阶段输出目录
+  trajectory_2d: "trajectory/2d/"
+  trajectory_3d: "trajectory/3d/"
+  calibration: "calibration/"
+  fitting: "fitting/"
+  velocity: "velocity/"
+  visualization: "../src/img/vis/"
+  # 输出格式
+  format:
+    data: "csv"              # 可选: csv, json
+    params: "json"
+
+# ==================== 可视化配置 ====================
+visualization:
+  dpi: 150
+  figsize: [12, 8]
+  colors:
+    trajectory: "#FF6B6B"
+    fitted_curve: "#4ECDC4"
+    field_lines: "#FFFFFF"
+  save_format: "png"
